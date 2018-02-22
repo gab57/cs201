@@ -1,0 +1,221 @@
+// Calc.java (PostFix Calculator Applet)
+// CS 201 HW 8
+//
+// $ Gabrielle Beaulieu
+
+import java.applet.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*; // for Stack
+
+public class Calc extends Applet implements ActionListener {
+
+	// instance variables
+	Label result; // label used to show result
+	Stack<Integer> stack; // stack used for calculations
+	int current; // current number being entered
+	boolean entered; // whether current number has been entered, if yes, number
+						// in red
+	Stack<Integer> emptyStack; // empty stack for clear function
+
+	// local color constants
+	static final Color black = Color.black;
+	static final Color white = Color.white;
+	static final Color red = Color.red;
+	static final Color green = Color.green;
+	static final Color blue = Color.blue;
+	static final Color yellow = Color.yellow;
+	static final Color dred = new Color(160, 0, 100);
+	static final Color dgreen = new Color(0, 120, 90);
+	static final Color dblue = Color.blue.darker();
+
+	public void init() {
+		// calculator applet "main" method
+
+		setFont(new Font("TimesRoman", Font.BOLD, 30));
+		setLayout(new BorderLayout());
+		add("North", makeTopPanel()); // add at top
+		add("South", makeBottomPanel());
+		add("Center", makeButtons()); // adding middle
+		setSize(300, 400);
+
+		emptyStack = new Stack<Integer>();
+		stack = emptyStack;
+	}
+
+	// ************HANDLING USER ACTION****************
+
+	public void actionPerformed(ActionEvent e) {
+		// interpret button clicks
+		if (e.getSource() instanceof Button) {
+			String label = ((Button) e.getSource()).getLabel();
+			if (label.equals("+"))
+				doOp("+");
+			else if (label.equals("-"))
+				doOp("-");
+			else if (label.equals("*"))
+				doOp("*");
+			else if (label.equals("/"))
+				doOp("/");
+			else if (label.equals("Pop"))
+				myPop();
+			else if (label.equals("(-)"))
+				makeNeg();
+			else if (label.equals("Enter"))
+				enter();
+			else if (label.equals("Clear"))
+				clear();
+			else { // number button
+				int n = Integer.parseInt(label);
+				number(n);
+			}
+		}
+	}
+
+	protected void doOp(String op) {
+		// performs numeric operations, takes "+", "-" etc. as parameter
+		if (entered == false)
+			enter();
+		int temp1 = stack.pop();
+		int temp2 = stack.pop();
+		if (op.equals("+"))
+			stack.push(temp2 + temp1);
+		else if (op.equals("-"))
+			stack.push(temp2 - temp1);
+		else if (op.equals("*"))
+			stack.push(temp2 * temp1);
+		else if (op.equals("/"))
+			stack.push(temp2 / temp1);
+		show(stack.peek());
+	}
+
+	protected void myPop() {
+		// interpret divide button (assumes stack has at least 1 elt)
+		if (entered == false)
+			enter();
+		if (!stack.empty()) {
+			stack.pop(); // returning next item in stack
+			if (!stack.empty()) { // checking if stack still !empty
+				int top = stack.peek();
+				show(top);
+			} else {
+				current = 0;
+				show(current);
+			}
+		} else {
+			current = 0;
+			show(current);
+		}
+	}
+
+	protected void makeNeg() {
+		// interpret divide button
+		current = current * (-1);
+		enter();
+	}
+
+	protected void enter() {
+		// interpret enter button
+		stack.push(current);
+		entered = true;
+		current = 0;
+		result.setForeground(red);
+	}
+
+	protected void clear() {
+		// interpret divide button
+		show(0);
+		stack = new Stack<Integer>();
+		current = 0;
+		result.setForeground(dgreen);
+	}
+
+	protected void number(int n) {
+		// interpret number buttons
+		result.setForeground(dgreen);
+		current = n + current * 10;
+		show(current);
+		entered = false;
+	}
+
+	protected void show(int n) {
+		// display number n in result label
+		result.setText(Integer.toString(n));
+	}
+
+	// ************APPLET GRAPHICAL INTERFACE****************
+
+	protected Button CButton(String s, Color fg, Color bg) {
+		// create colored button
+		Button b = new Button(s);
+		b.setBackground(bg);
+		b.setForeground(fg);
+		b.addActionListener(this);
+		return b;
+	}
+
+	public Label makeResultLabel() {
+		// builds result label
+		result = new Label(Integer.toString(current));
+		result.setBackground(Color.white);
+		result.setAlignment(Label.RIGHT);
+		result.setFont(new Font("TimesRoman", Font.BOLD, 40));
+		result.setForeground(dgreen);
+		return result;
+	}
+
+	public Panel makeTopPanel() {
+		// builds top panel displaying result
+		makeResultLabel();
+		Label t1 = new Label(), t2 = new Label(), t3 = new Label(), t4 = new Label();
+		t1.setFont(new Font("TimesRoman", Font.BOLD, 10));
+		t2.setFont(new Font("TimesRoman", Font.BOLD, 10));
+		t3.setFont(new Font("TimesRoman", Font.BOLD, 10));
+		t4.setFont(new Font("TimesRoman", Font.BOLD, 10));
+
+		Panel topField = new Panel();
+		topField.setBackground(blue);
+		topField.setLayout(new BorderLayout());
+		topField.add("North", t1); // blue border
+		topField.add("South", t2); // blue border
+		topField.add("East", t3); // blue border
+		topField.add("West", t4); // blue border
+		topField.add("Center", result);
+		return topField;
+	}
+
+	public Panel makeButtons() {
+		// builds panel of buttons
+		Panel Buttons = new Panel();
+		Buttons.setBackground(Color.blue);
+		Buttons.setLayout(new GridLayout(4, 4)); // 4 rows, 4 columns
+		Buttons.add(CButton("7", dgreen, yellow));
+		Buttons.add(CButton("8", dgreen, yellow));
+		Buttons.add(CButton("9", dgreen, yellow));
+		Buttons.add(CButton("+", yellow, dred));
+		Buttons.add(CButton("4", dgreen, yellow));
+		Buttons.add(CButton("5", dgreen, yellow));
+		Buttons.add(CButton("6", dgreen, yellow));
+		Buttons.add(CButton("-", yellow, dred));
+		Buttons.add(CButton("1", dgreen, yellow));
+		Buttons.add(CButton("2", dgreen, yellow));
+		Buttons.add(CButton("3", dgreen, yellow));
+		Buttons.add(CButton("*", yellow, dred));
+		Buttons.add(CButton("0", dgreen, yellow));
+		Buttons.add(CButton("(-)", dblue, yellow));
+		Buttons.add(CButton("Pop", dblue, yellow));
+		Buttons.add(CButton("/", yellow, dred));
+		return Buttons;
+	}
+
+	public Panel makeBottomPanel() {
+		// builds bottom panel
+		Panel bottomField = new Panel();
+		bottomField.setBackground(dgreen);
+		bottomField.setLayout(new GridLayout(1, 2));
+		bottomField.add(CButton("Enter", yellow, dgreen));
+		bottomField.add(CButton("Clear", yellow, dgreen));
+		return bottomField;
+	}
+
+}
