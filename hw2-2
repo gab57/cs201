@@ -1,0 +1,76 @@
+//Buggle.java
+//CS 201 HW 2, problem 5
+//
+// $ Gabrielle Beaulieu
+
+
+public class Buggle {
+
+  // instance variables
+  protected int xloc;
+  protected int yloc;
+  protected String name;
+  protected String dir;
+
+  // construct a new Buggle
+  public Buggle() {
+      this.xloc = 1;
+      this.yloc = 1;
+      //this.name = String name;
+      this.dir = "EAST";
+  }
+
+  // move buggle forward one grid cell
+  public void forward() {
+      if ((this.dir).equals("NORTH")){
+          this.yloc += 1;
+      } else if ((this.dir).equals("SOUTH")){
+          this.yloc -= 1;
+      } else if ((this.dir).equals("EAST")){
+          this.xloc += 1;
+      } else if ((this.dir).equals("WEST")){
+          this.xloc -= 1;
+      }
+  }
+
+  // move forward (k) grid cells
+  public void forward(int k) {
+      for (int i = 0; i < k; i++) {
+        forward();
+      }
+  }
+
+  // turn buggle 90 degrees to right (EAST -> SOUTH -> WEST -> NORTH -> EAST)
+  public void right() {
+      if ((this.dir).equals("EAST")){
+          this.dir = "SOUTH";
+      } else if ((this.dir).equals("SOUTH")){
+          this.dir = "WEST";
+      } else if ((this.dir).equals("WEST")){
+          this.dir = "NORTH";
+      } else if ((this.dir).equals("NORTH")){
+          this.dir = "EAST";
+      }
+  }
+
+  // turn buggle 90 degrees to left (EAST -> NORTH -> WEST -> SOUTH -> EAST)
+  public void left(){
+      if ((this.dir).equals("EAST")){
+          this.dir = "NORTH";
+      } else if ((this.dir).equals("NORTH")){
+          this.dir = "WEST";
+      } else if ((this.dir).equals("WEST")){
+          this.dir = "SOUTH";
+      } else if ((this.dir).equals("SOUTH")){
+          this.dir = "EAST";
+      }
+  }
+
+  // return a string representation of the buggle
+  public String toString(){
+      String buginfo = ("x=" + this.xloc + ", y=" + this.yloc + ", direction="
+      + this.dir);
+    return buginfo;
+  }
+
+}
