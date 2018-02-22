@@ -1,0 +1,212 @@
+// HW6IntTreeOps.java
+// CS 201 Homework 6
+//
+// $ Gabrielle Beaulieu
+
+import structure5.*;
+
+public class HW6IntTreeOps extends IntTreeOps {
+
+	
+	//***problem 1***
+    public static IntTree weightedTree(IntTree t)
+    //returns  copy of t where values are multiplied by level number
+    {
+    	return weightedTreeAux(t, 1);
+    }
+        
+    public static IntTree weightedTreeAux(IntTree t, int level) 
+    //helps weightedTree method
+    {
+        if (isEmpty(t)) {
+            return empty();
+        } else {
+            return node(level*value(t),
+            	   weightedTreeAux(left(t), level+1),
+            	   weightedTreeAux(right(t),level+1));
+        }
+    }
+
+    
+    //***problem 2***
+    public static Boolean compareTrees(IntTree t, IntTree y)
+    //returns a boolean for whether or not trees are the same shape
+    {
+    	if (isEmpty(t) && isEmpty(y)){
+    		return true;
+    	} else if ((!isEmpty(t) && isEmpty(y)) || (isEmpty(t) && !isEmpty(y))){
+        		return false;
+    	} else {
+    		return (compareTrees(left(t), left(y)) == true && 
+    				compareTrees(right(t), right(y)) == true);
+    	} 
+    }
+
+    
+    //***problem 3***
+    public static Boolean testFullTree(IntTree t)
+    //returns Boolean whether or not tree is full
+    {
+    	if (isEmpty(t)){
+    		return true;
+    	} else if (compareTrees(left(t), right(t)) == true){
+    			if ((left(t) != null && right(t) != null) || (isEmpty(left(t)) && isEmpty(right(t)))){
+    				return (testFullTree(left(t)) == true && testFullTree(right(t)) == true);
+    			} else {
+    				return false;
+    			}
+    	} else {
+    		return false;
+    	}
+    }
+    
+    
+    //***problem 4***
+    public static Boolean testOrderedTree(IntTree t)
+    //returns boolean whether or not tree is ordered
+    {
+    	if (isEmpty(t)){
+    		return true;
+    	} else { 
+    		return testOrderedTreeAux(t, Integer.MIN_VALUE);
+    	}
+    }
+    
+    public static Boolean testOrderedTreeAux(IntTree t, int prev)
+    //helps testOrderedTree
+    {
+    	if (isEmpty(t)){
+    		return true;
+    	} else {
+    		if (value(t) >= prev){
+    			return (testOrderedTreeAux(left(t), value(t)) == true && 
+    					testOrderedTreeAux(right(t), value(t)) == true);		
+    		} else {
+    			return false;
+    		}
+    	}
+    }
+
+    public static void levelOrderWrite(IntTree t) {
+        // prints out the contents of the tree t in level order
+        Stack<IntTree> q = new StackList<IntTree>();
+        q.add(t);
+        while (!q.isEmpty()) {
+            IntTree node = q.remove();
+            if (!isEmpty(node)) {
+                System.out.print("  " + value(node));
+                q.add(left(node));
+                q.add(right(node));
+            }
+        }
+        System.out.println();
+    }
+    /*
+    //***extra credit ***
+    public static void levelOrderWrite(IntTree t){
+    	if (!isEmpty(t)){
+    		System.out.print("   " + value(t) + "   ");
+    		levelOrderWrite2(t);
+    		System.out.println("");
+    	}
+    }
+    
+    public static void levelOrderWrite2(IntTree t)
+    //helps levelOrderWrite
+    {
+    	if (isEmpty(t)){
+    		System.out.print("");
+    	} else if (left(t) != null && right(t) != null){
+    		System.out.print(value(left(t)) + "   " + value(right(t)) + "   ");
+    		levelOrderWrite2(left(t));
+    		levelOrderWrite2(right(t));
+    	} else if (left(t) == null && right(t) != null){
+    		System.out.print(value(right(t)) + "   ");
+    		levelOrderWrite2(right(t));
+    	} else if (right(t) == null && left(t) != null){
+    		System.out.print(value(left(t)) + "   ");
+    		levelOrderWrite2(left(t));
+    	}
+    }
+    	*/
+    
+    //***main method***
+    public static void main(String[] args){
+    	IntTree[] trees;
+    	trees = new IntTree[7];
+    	trees[0] = empty();
+    	trees[1] = leaf(3);
+    	trees[2] = node(1, leaf(2), leaf(3));
+    	trees[3] = node(2, leaf(1), leaf(3));
+    	trees[4] = node(3, node(1, empty(), leaf(2)), node(4, empty(), leaf(5)));
+    	trees[5] = node(3, leaf(1), node(4, leaf(2), leaf(5))); 
+    	trees[6] = node(1, node(2, leaf(4), leaf(5)), node(3, leaf(6), leaf(7)));
+    	
+    	if (args.length < 1 || args.length > 2){
+    		System.out.println("\n usage: java HW6IntTreeOps <t1> or java HW6IntTreeOps <t1> <t2> \n \n" +
+    				"Tests tree operations on given tree or trees." 
+    				+ " If one tree is given, program runs weightedTree(), "
+    				+ "testFullTree(), and testOrderedTree() functions."
+    				+ " If two trees are given, program runs compareTrees() function."
+    				+ " Valid tree numbers are 1 through 7. \n");
+    	} else if (args.length == 1){
+    		System.out.println("Tree " + args[0] + ":");
+    		printTree(trees[(Integer.parseInt(args[0]))-1]);
+    		
+    		IntTree t = weightedTree(trees[(Integer.parseInt(args[0]))-1]);
+    		System.out.println("weightedTree:");
+    	    printTree(t);
+
+    		Boolean a = testFullTree(trees[(Integer.parseInt(args[0]))-1]);
+    	    System.out.println("testFullTree: " + a);
+    		
+    		Boolean b = testOrderedTree(trees[(Integer.parseInt(args[0]))-1]);
+    	    System.out.println("testOrderedTree: " + b);
+    		
+    	    System.out.println("levelOrderWrite: ");
+    	    levelOrderWrite(trees[(Integer.parseInt(args[0]))-1]);
+    	    
+    	} else if (args.length == 2) {
+    		
+    		System.out.println("Tree " + args[0] + ":");
+    		printTree(trees[(Integer.parseInt(args[0]))-1]);
+    		
+    		System.out.println("Tree " + args[1] + ":");
+    		printTree(trees[(Integer.parseInt(args[1]))-1]);
+    		
+    		Boolean c = compareTrees(trees[(Integer.parseInt(args[0]))-1], 
+    								 trees[(Integer.parseInt(args[1]))-1]);
+    	    System.out.println("compareTrees: " + c);
+    	}				
+    }
+
+    
+    //***print method***
+    public static void printTree(IntTree t)
+    //prints out trees from right to left;
+    //empty trees are represented as a period
+    {
+    	if (isEmpty(t)){
+    		System.out.println("   .");
+    	} else{
+    		printTreeAux(t, 0, 0);
+    	}
+    }
+    	
+    public static void printTreeAux(IntTree t, int level, int tabs)
+    //helps printTree
+    {
+    	for (int i = 0; i < level*tabs; i++){
+        		System.out.print("    ");
+    	} if (isEmpty(t)){
+    		System.out.println("");
+    	} else if (isLeaf(t)){
+    		System.out.println("   "+ value(t));
+    	} else {
+    		System.out.print("   " + value(t));
+    		printTreeAux(right(t), level+1, 0);
+    		printTreeAux(left(t), level+1, 1);
+    	}
+    }
+    
+}
