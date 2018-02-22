@@ -1,0 +1,100 @@
+// Shuffle.java
+// CS 201  HW 1 Problem 3
+//
+// $ Gabrielle Beaulieu
+
+public class Shuffle {
+
+    //Shuffle determines and prints shuffle periods through comparing
+    //  different perfect shuffles with original identity
+
+
+    //Prints shuffle periods for even deck sizes between (x,y)
+    public static void main(String[] args) {
+
+        printShufflePeriods(2,100);
+    }
+
+    //Prints  shuffle periods for even deck sizes between lo and hi, inclusive
+    public static void printShufflePeriods(int lo, int hi) {
+
+        int current = lo;
+        while (current <= hi) {
+          int period = shufflePeriod(current);
+          System.out.println("shufflePeriod(" + current + ")=" + period);
+          current += 2;
+        }
+    }
+
+
+    //Computes shuffle period for a deck of size L, with L assumed to be even
+    public static int shufflePeriod(int L) {
+
+        int[] identL = identity(L);
+        int[] currentTest = perfectShuffle(identL);
+
+        int num = 1;
+        while (isIdentity(currentTest) == false) {
+          currentTest = perfectShuffle(currentTest);
+          num++;
+
+        }
+        return num;
+    }
+
+
+    // Performs a perfect shuffle
+    // Returns a new perfect shuffle array of A
+    public static int[] perfectShuffle(int[] A) {
+	      // allocating result array
+        int[] result = new int[A.length];
+        int count = 0;
+        for (int i=0; i<(A.length); i++) {
+          if (i%2 == 0){
+            result[i] = A[count];
+          } else {
+            result[i] = A[count + (A.length/2)];
+            count++;
+          }
+        }
+        return result;
+    }
+
+
+    //Returns an identity array of length A
+    public static int[] identity(int A) {
+      int[] L= new int[A];
+      for (int i=0; i < A; i++) {
+        L[i] = i;
+      }
+      return L;
+    }
+
+
+    //Returns a boolean value of whether array A is an identity array
+    public static boolean isIdentity(int[] A) {
+      for (int i=0; i < (A.length-1); i++) {
+        int cur = A[i];
+        int temp = A[i+1];
+        if (temp <= cur) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+
+    //Creates a string version of an integer array A
+    //***credit to Middlebury compsci dept/Scharstein
+    public static String intArrayToString(int[] a) {
+        String s = "[";
+        if (a.length > 0) {
+            s += a[0];
+            for (int i = 1; i < a.length; i++) {
+                s += (", " + a[i]);
+            }
+        }
+        s += "]";
+        return s;
+    }
+}
