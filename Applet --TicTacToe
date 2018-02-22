@@ -1,0 +1,361 @@
+// Final Project
+//
+// Visualizes operations on balanced (or not) binary search trees
+
+import java.applet.*;
+import java.awt.*;
+import java.util.*; // for Random
+import java.awt.event.*;
+
+public class TicTacToeApplet extends Applet implements ActionListener, ItemListener {
+    private static final long serialVersionUID = 1L; // to avoid warning
+    
+    // instance variables for all components that we need access to
+    Label player1Label, player2Label;  // label used to display game order and player symbols
+    Choice playerChoice, symbolChoice;
+    TicTacToeApplet c;
+	private gameBoard b;
+	private Button reset;
+	private Label winner;
+	private String gameState;
+    
+    
+    // this initializes the applet
+    public void init() {
+    	// Initialize variables
+		player1Label = new Label("Player 1: ", Label.CENTER);
+		player2Label = new Label("Player 2: ", Label.CENTER);
+    	
+        // Font to use in applet
+        setFont(new Font("TimesRoman", Font.BOLD, 14));
+        
+        setLayout(new BorderLayout());
+        add("North", makeTopPanel());
+        add("South", new Label("Text box", Label.LEFT));
+        c = new TicTacToeApplet();
+        c.setBackground(Color.blue);
+        add("Center", c);
+        
+		// left panel
+		Panel board = new Panel();
+		board.setLayout(new BorderLayout());
+		add("Center", board);
+
+		// reset button
+		reset = new Button("Reset");
+		reset.setBackground(Color.black);
+		reset.addActionListener(this);
+		Panel bottom = new Panel();
+		bottom.add(reset);
+		bottom.setBackground(Color.black);
+		board.add("South", bottom);
+
+		// game board
+		Image XmarkOriginal = getImage(getDocumentBase(), "X.jpg");
+		Image Xmark = XmarkOriginal.getScaledInstance(120, 120, Image.SCALE_DEFAULT);
+		Image OmarkOriginal = getImage(getDocumentBase(), "O.jpg");
+		Image Omark = OmarkOriginal.getScaledInstance(120, 120, Image.SCALE_DEFAULT);
+		Image blankOriginal = getImage(getDocumentBase(), "blank.jpg");
+		Image blank = blankOriginal.getScaledInstance(120, 120, Image.SCALE_DEFAULT);
+
+		b = new gameBoard(Xmark, Omark, blank);
+		b.setBackground(Color.black);
+		b.addMouseListener(b);
+		board.add("Center", b);
+		
+		add("Center", board);
+
+		
+		//gameState = b.gameState();
+		//winner = new Label(gameState);
+		//winner.setForeground(Color.white);
+		//winner.setBackground(Color.black);
+		//winner.setFont(new Font("Impact", Font.BOLD, 40));
+		//right.add("Center", winner);
+    }
+
+    // Creates choice panel to be displayed at the top
+    public Panel makeTopPanel() {
+        Panel p = new Panel();
+        p.setLayout(new GridLayout(4, 1));
+        p.add(makeTitlePanel());
+        p.add(makeRulesPanel());
+        p.add(makeChoicePanel());
+        p.add(makePlayersPanel());
+        p.setBackground(Color.blue);
+        return p;
+    }
+    
+    // Creates label to be displayed at top
+    public Panel makeTitlePanel() {
+        Panel p = new Panel();
+        p.setLayout(new GridLayout(1, 1));
+        p.add(new Label("Welcome to Tic-Tac-Toe!", Label.CENTER));
+        p.setBackground(Color.white);
+        p.setFont(new Font("TimesRoman", Font.BOLD, 24));
+        return p;
+    }
+    
+    public Panel makeRulesPanel() {
+        Panel p = new Panel();
+        p.setLayout(new GridLayout(1, 1));
+        p.add(new Label("Brief description of rules here", Label.CENTER));
+        p.setBackground(Color.white);
+        p.setFont(new Font("TimesRoman", Font.PLAIN, 12));
+        return p;
+    }
+
+    // Creates panel with menus
+    public Panel makeChoicePanel() {
+        Panel p = new Panel();
+        p.setLayout(new GridLayout(1, 2));
+        p.setBackground(Color.white);
+
+        Panel p1 = new Panel();
+        p1.setLayout(new BorderLayout());
+        p1.add("West", new Label("Choose Player 1 symbol: "));
+        playerChoice = new Choice();
+        playerChoice.addItem("X");
+        playerChoice.addItem("O");
+        p1.add("Center", playerChoice);
+        p.add(p1);
+        
+        Panel p2 = new Panel();
+        p2.setLayout(new BorderLayout());
+        p2.add("West", new Label("Choose Player 2:"));
+        symbolChoice = new Choice();
+        symbolChoice.addItem("Human");
+        symbolChoice.addItem("Computer (Easy)");
+        symbolChoice.addItem("Computer (Hard)");
+        p2.add("Center", symbolChoice);
+        p.add(p2);
+        symbolChoice.addItemListener(this);
+        
+        return p;
+    }
+    
+    public Panel makePlayersPanel() {
+        Panel p = new Panel();
+        p.setLayout(new GridLayout(2, 1));
+        p.add("Center", player1Label);
+        p.add("Center", player2Label);
+        p.setBackground(Color.white);
+        p.setFont(new Font("TimesRoman", Font.PLAIN, 12));
+        return p;
+    }
+    
+    // handles reset button events
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == reset) {
+			b.resetGame();
+		}
+	}
+    
+    // This method is called by java to handle events on choice menus
+    public void itemStateChanged(ItemEvent e)  {
+    	if (symbolChoice.getSelectedItem().equals("X")) {
+    		player1Label.setText("Player 1: Human X");
+    		
+    		if(playerChoice.getSelectedItem().equals("Human"))
+    			player2Label.setText("Player 2: Human O");
+    		
+    		else if(playerChoice.getSelectedItem().equals("Computer (Easy)"))
+    			player2Label.setText("Player 2: Computer (Easy) O");
+    		
+    		else 
+    			player2Label.setText("Player 2: Computer (Hard) O");
+    	}
+    	
+    	if (symbolChoice.getSelectedItem().equals("O")) {
+    		player1Label.setText("Player 1: Human O");
+    		
+    		if(playerChoice.getSelectedItem().equals("Human"))
+    			player2Label.setText("Player 2: Human X");
+    		
+    		else if(playerChoice.getSelectedItem().equals("Computer (Easy)"))
+    			player2Label.setText("Player 2: Computer (Easy) X");
+    		
+    		else 
+    			player2Label.setText("Player 2: Computer (Hard) X");
+    	}
+    }
+}
+
+@SuppressWarnings("serial")
+
+// TicTacToecanvas:  an object that displays the game TicTacToe
+
+
+
+class gameBoard extends Canvas implements MouseListener {
+
+	// instance variables
+	int numBoxes = 9;
+	int side = 120;
+	int border = 30;
+	boolean player; // binary representation of turn
+	Image X, O, bl;
+	Image[] contents = new Image[numBoxes];
+
+	// constructor
+	public gameBoard(Image Xmark, Image Omark, Image blank) {
+		// initializes image array & instance variables
+		X = Xmark;
+		O = Omark;
+		bl = blank;
+		resetGame();
+	}
+
+	public void paint(Graphics g) {
+		// draws game board
+		for (int j = 0; j < 3; j++) {
+			for (int i = 0; i < 3; i++) {
+				int x = border + i * side;
+				int y = border + j * side;
+				g.setColor(new Color(0, 250, 250));
+				g.drawRect(x, y, side, side);
+				g.drawImage(contents[i + 3 * j], x, y, this);
+			}
+		
+		}
+	}
+
+	public void mousePressed(MouseEvent event) {
+		// manages mouse clicks
+		Point h = event.getPoint();
+		int x = h.x - border;
+		int y = h.y - border;
+		int box = 10; // arbitrarily initializing
+		if (!gameOver()) {
+			if (x >= 0 && x < 3 * side) { // finding box
+				if (y >= 0 && y < side)
+					box = x / side;
+				else if (y >= side && y < 2 * side)
+					box = 3 + x / side;
+				else if (y >= 2 * side && y < 3 * side)
+					box = 6 + x / side;
+			}
+			if (box != 10) { // ensuring click was in box
+				if (isEmpty(box)) { // checking if box is empty
+					if (player == true) {
+						contents[box] = X;
+						player = !player;
+						System.out.println(winner());
+					} else {
+						contents[box] = O;
+						player = !player;
+						System.out.println(winner());
+
+					}
+				}
+			}
+			repaint();
+		}
+	}
+
+	// instance methods
+	public void resetGame() {
+		for (int i = 0; i < numBoxes; i++)
+			contents[i] = bl;
+		player = true;
+		repaint();
+	}
+
+	public boolean fullBoard() {
+		for (int i = 0; i < numBoxes; i++) {
+			if (isEmpty(i))
+				return false;
+		}
+		return true;
+	}
+
+	public boolean gameOver() {
+		if (fullBoard())
+			return true;
+		else if (winner() != "")
+			return true;
+		else
+			return false;
+	}
+
+	public String winner()
+	// returns coded info for winner and win location
+	{
+		Image winner = bl;
+		String path = "";
+		for (int i = 0; i < 3; i++) {
+			if (contents[i * 3] == contents[i * 3 + 1] // checking horizontal
+					&& contents[i * 3 + 1] == contents[i * 3 + 2]) {
+				winner = contents[i * 3];
+				path = "h" + Integer.toString(i*3);
+				System.out.println(path);
+			}
+			if (contents[i] == contents[i + 3] // checking vertical 
+					&& contents[i + 3] == contents[i + 6]) {
+				winner = contents[i];
+				path = "v" + Integer.toString(i);
+			}
+		}
+		if (contents[0] == contents[4] // checking diagonal 
+				&& contents[4] == contents[8]) {
+			winner = contents[0];
+			path = "d" + Integer.toString(0);
+		} else if (contents[2] == contents[4] && contents[4] == contents[6]) {
+			winner = contents[2];
+			path = "d" + Integer.toString(2);
+		}
+		if (winner == X)
+			return "X" + path;
+		else if (winner == O)
+			return "O" + path;
+		else
+			return "";
+	}
+
+	public void setPlayer(Boolean trueOrFalse) {
+		player = trueOrFalse;
+	}
+
+	public boolean isEmpty(int boxIndice) {
+		// returns whether box is empty; boxIndice is int 0-8
+		if (contents[boxIndice] == bl)
+			return true;
+		else
+			return false;
+	}
+
+	public String gameState(){
+	//winner Label
+		if (gameOver()){
+			String winCode = winner();
+			if (winCode == "") return "It's a tie...Try again!";
+			else if (getLetter(winCode,0) == "X"){
+				System.out.println(winCode);
+				return "Player X wins!";
+			} else if (getLetter(winCode,0) == "O"){
+				System.out.println(winCode);
+				return "Player O wins!";		
+			} else return "";
+		} else return "";
+	} 
+	
+	public String getLetter(String word, int indice){
+		String letter = word.substring(indice,indice+1);
+		return letter;
+	}
+		
+	
+	// necessary MouseListener functions
+	public void mouseReleased(MouseEvent event) {
+	}
+
+	public void mouseClicked(MouseEvent event) {
+	}
+
+	public void mouseEntered(MouseEvent event) {
+	}
+
+	public void mouseExited(MouseEvent event) {
+	}
+	
+}
