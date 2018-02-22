@@ -1,0 +1,72 @@
+// FindPrincipal.java
+// CS 201 HW 1 problem 2
+//
+// $ Gabrielle Beaulieu
+
+public class findPrincipal {
+
+    //Finds highest possible principal value to achieve a given mortgage with
+    //  an interest rate of (interest) and a duration of (years)
+    //Parameters:
+    //  mortgage -- monthly mortgage
+    //  interest -- as percentage, not decimal
+    //  years -- number of years for the mortgage
+
+
+    //Calls findBetween to return highest possible principal value
+    public static double find(double mortgage, double interest,
+			      double years) {
+
+            return findBetween(mortgage, interest, years,
+			   0, upperBound(mortgage, interest, years));
+    }
+
+
+    //Returns highest possible pincipal with given mortgage, interest, and years
+    //  using modified binary search between (hi) and (lo)
+    public static double findBetween(double mortgage, double interest,
+		      double years, double lo, double hi) {
+
+      double mid = ((lo+hi)/2);
+      double testmortgage = Mortgage.mortgage(mid, interest, years);
+      while (Math.abs(testmortgage - mortgage) > 1) {
+
+        if (testmortgage > mortgage) {
+          hi = mid;
+        } else if (testmortgage < mortgage) {
+          lo = mid;
+        }
+        mid = ((lo+hi)/2);
+        testmortgage = Mortgage.mortgage(mid, interest, years);
+        }
+    return mid;
+    }
+
+
+    //Returns a value greater than the highest possible principal with given
+    //  mortgage, interest, and years
+    public static double upperBound(double mortgage, double interest,
+		      double years) {
+
+      double p = 1;
+      while (Mortgage.mortgage(p, interest, years) < mortgage){
+          p = p*2;
+          }
+      return p;
+    }
+
+
+    //Calls find and prints "find(m, i, y) = p" with values of mortgage,
+    //  interest, years, and principal imputer for m, i, y, and p respectively
+    //***credit to Middlebury compsci dept/Scharstein
+    public static void testFind(double m, double i, double y) {
+	     System.out.println("find(" + m + ", " + i + ", " + y + ") = "
+			   + find(m, i, y));
+    }
+
+
+    //Runs testFind with given imputs for m, i, and y
+    public static void main(String [] args) {
+	     testFind(1200.00, 7.00, 30.0);
+    }
+}
