@@ -1,0 +1,146 @@
+// Complete heap of integers, implemented using Vector
+//
+// based on Bailey's "VectorHeap"
+//
+// CS 201 HW 7
+//
+// $ Gabrielle Beaulieu
+
+import java.util.*;     // uses Java's Vectors so that browser can find them
+
+public class IntVectorHeap implements IntHeap {
+
+    // the values in the heap, stored in level-order
+    protected Vector<Integer> data;
+    
+    // index of "current" root, so that left() and right() can be implemented
+    protected int root;
+
+    // NOTE: add() and remove() will only work on the original heap
+    // (i.e., if root==0).  Their behavior on the "subtrees" return by
+    // left() or right() is unspecified.
+
+    // constructor
+    public IntVectorHeap() {
+        data = new Vector<Integer>();
+        root = 0;
+    }
+
+    // private constructor (used by left() and right())
+    protected IntVectorHeap(Vector<Integer> d, int r) {
+        data = d;
+        root = r;
+    }
+
+    // returns true if heap has no values
+    public boolean isEmpty() {
+        return root >= data.size();
+    }
+
+    // returns the minimum int at the root of the heap ( = Bailey's getFirst())
+    // pre: !isEmpty()
+    public int value() {
+        return data.get(root);
+    }
+
+    //********************************************
+    // adds value to heap
+    public void add(int value){
+        data.add(value);
+        percolateUp(data.size()-1);
+    }
+    
+    // moves node at index leaf up to appropriate position in Heap
+    protected void percolateUp(int leaf) {
+    	int parent = parent(leaf);
+    	int leafVal = data.get(leaf);
+    	
+    	if (leaf==0){
+    		return;
+    	} else if (leaf > 0 && (leafVal > data.get(parent))){
+    		return;
+    	} else if (leaf > 0 && (leafVal < data.get(parent)))
+    		data.set(leaf,data.get(parent));
+    		data.set(parent, leafVal);
+    		percolateUp(parent);
+        }
+    	
+    
+    
+    public int remove() 
+    // removes and returns the minimum int (assumes data is not empty)
+    {
+    	int root = value();
+    	int len = data.size();
+    	data.set(0,data.get(len-1));
+        data.setSize(len-1);
+        if (len > 1){
+        	percolateDown(0);
+        }
+        return root;
+
+    }
+
+	public void percolateDown(int root){
+		int size = data.size();
+		int val = data.get(root);
+		if (root < size){
+			int childInd = left(root);
+			if (childInd < size){
+				if ((right(root) < size) && (data.get(childInd+1) < data.get(childInd))) {
+					childInd++;	
+				} if (data.get(childInd) < val) {
+					data.set(root, data.get(childInd));
+					data.set(childInd, val);
+					percolateDown(childInd);
+				} else {
+					data.set(root, val);
+					return;
+				}
+			} else {
+				data.set(root, val);
+				return;	
+			}
+		}
+	}
+
+	//*******************************************************
+
+    // removes all elements from the heap
+    public void clear() {
+        data = new Vector<Integer>();
+        root = 0;
+    } 
+
+    // returns left "subtree" of "current" root of heap
+    public IntHeap left() {
+        return new IntVectorHeap(data, left(root));
+    }
+
+    // returns right "subtree" of "current" root of heap
+    public IntHeap right() {
+        return new IntVectorHeap(data, right(root));
+    }
+
+
+    // code adapted from Bailey's "VectorHeap" below ---------------
+    // (assumes root is at index 0!)
+    
+    // returns index of parent of value at i
+    protected static int parent(int i) {
+        return (i-1)/2;
+    }
+
+    // returns index of left child of value at i
+    protected static int left(int i) {
+        return 2*i+1;
+    }
+
+    // returns index of right child of value at i
+    protected static int right(int i) {
+        return 2*(i+1);
+    }
+    
+}
+
+
