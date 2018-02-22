@@ -1,0 +1,67 @@
+//PasswordAccount.java
+//CS 201 HW 2, problem 4
+//
+// $ Gabrielle Beaulieu
+
+
+public class PasswordAccount {
+
+    // instance variables
+    protected int id;
+    protected String pass;
+    protected double balance;
+
+
+    // constructors
+    public PasswordAccount(int id, String pass, double balance) {
+	    this.id = id;
+	    this.balance = balance;
+      this.pass = pass;
+    }
+
+    public PasswordAccount(int id, String pass) {
+	    // we call the other constructor with 0 as the initial balance
+	    this(id, pass, 0);
+    }
+
+    // instance methods
+
+    //adds (amount) to balance of a password accound
+    public void deposit(double amount) {
+	    if (amount > 0) {
+	        balance += amount;
+	        System.out.println("Deposited $" + amount + ".");
+	    } else {
+	        System.err.println("You must deposit a positive amount of money.");
+	    }
+    }
+
+    //removes (amount) to balance of a password account
+    public void withdraw(double amount, String password) {
+      if (password.equals(this.pass)) {
+          if (amount > 0 && amount <= balance) {
+	            balance -= amount;
+	            System.out.println("Withdrew $" + amount + ".");
+	        } else {
+	            System.err.println("Sorry, you must withdraw a positive amount" +
+			       " of money up to $" + balance + ".");
+          }
+      } else {
+          System.out.println("Sorry, incorrect password.");
+	    }
+    }
+
+    // prints balance
+    public void printBalance(String password) {
+      if (password.equals(this.pass)) {
+	       System.out.println("Your balance is $" + balance + ".");
+      } else {
+        System.out.println("Sorry, incorrect password.");
+      }
+    }
+
+    //returns a string of account number
+    public String toString() {
+	     return ("Account #" + id);
+    }
+}
