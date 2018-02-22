@@ -1,0 +1,54 @@
+// Josephus.java
+// CS 201 HW 3, part 2
+//
+// $ Gabrielle Beaulieu
+
+public class Josephus {
+
+    //instance variables
+    protected Circular circle;
+    protected int numToSkip;
+
+    //constructpr
+    public Josephus(int numPeople, int numToSkip){
+        circle = new CircularVector();
+        this.numToSkip = numToSkip;
+        for (int i = 1; i <= numPeople; i++){
+          circle.addAfterCurrent(i);
+        }
+        circle.next(); //returning current to 0
+    }
+
+    // prints input string
+    public static void p(String s) {
+        System.out.println(s);
+    }
+
+    // finds messenger, prints skips and removals
+    public void findMessenger() {
+      while (circle.size() > 1){
+          for(int i = 0; i < numToSkip; i++){
+              p("Skip " + (circle.getCurrent()));
+              circle.next();
+          }
+          p("Remove " + circle.getCurrent());
+          circle.removeCurrent();}
+      p("The messenger is " + circle.getCurrent() + "!");
+      }
+
+    // main function
+    public static void main(String[] args) {
+        if (args.length != 2) { //defining parameters if wrong # inputs
+            p("\nusage: Josephus <numPeople> <numToSkip>");
+        } else {
+          int numP = Integer.parseInt(args[0]);
+          int numTS = Integer.parseInt(args[1]);
+          p("\nSolving ~JOSEPHUS PROBLEM~ with " + numP + " people, skipping "
+            + numTS + "!");
+
+          Josephus j = new Josephus(numP, numTS);
+          j.findMessenger();
+        }
+      }
+
+}
