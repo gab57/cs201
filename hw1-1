@@ -1,0 +1,42 @@
+// Mortgage.java
+// CS 201 HW 1 problem 1
+//
+//$ Gabrielle Beaulieu
+
+
+public class Mortgage {
+
+    //Calculates and returns monthly mortgage from parameters
+    //   principal - the princial in dollars
+    //   interest - the interest in percent
+    //   years - the duration of the mortgage in years
+    public static double mortgage(double principal, double interest, double years) {
+	     double num =  principal*(interest/1200);
+       double denom = 1 - Math.pow((1/(1+(interest/1200))),(12*years));
+       double M = (num/denom);
+
+	    return M;
+    }
+
+
+    //Prints interest/years/mortgage/calculated total cost for input values
+    public static void print(double principal, double interest, double years){
+	     System.out.printf("principal=" + principal + "; interest=" + interest +
+			 ";  years=" + years + "; mortgage= %.2f"+ " total= %.2f" + " \n",
+       mortgage(principal, interest, years),
+       years*(mortgage(principal, interest, years)));
+       //System.out.print(" ");
+    }
+
+
+    //Prints interest/years/mortgage/calculated total cost for  interest rates
+    //  between 7 and 10 percent (increments of 0.25)
+    public static void main (String[] args) {
+	    double principal=250000;
+	    double years=30;
+
+      for (double interest=5; interest<10; interest+=0.25) {
+	       print(principal, interest, years);
+       }
+     }
+}
