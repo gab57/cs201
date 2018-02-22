@@ -1,0 +1,110 @@
+// CircularVector.java
+// CS 201 HW 3, part 1
+//
+// $ Gabrielle Beaulieu
+
+import structure.*;
+
+public class CircularVector implements Circular{
+
+    //instance variables
+    protected int current;
+    protected Vector list;
+
+
+    //constructor
+    public CircularVector(){
+        current = 0;
+        list = new Vector();
+    }
+
+    //methods
+
+    // moves current to next position in arrangement
+    public void next() {
+        if (current == list.size() - 1) {
+            current = 0;
+        } else {
+            current++;
+        }
+    }
+
+    // returns number of elts in object (0 if empty)
+    public int size() {
+        return list.size();
+    }
+
+    // returns current elt
+    public Object getCurrent() {
+        return list.get(current);
+    }
+
+    // deletes current elt; if non-empty, following elt is now current
+    public void removeCurrent() {
+        if (list.size() == 1){ //if vector has size 1
+            list.remove(getCurrent());
+            current = -1;
+        } else {
+            if (current == list.size() - 1) { //if current is last in vector
+                list.remove(getCurrent());
+                current = 0;
+            } else {
+                list.remove(getCurrent());
+        }
+      }
+    }
+
+    public void addAfterCurrent(Object obj){
+      if (list.isEmpty()){
+          list.add(obj);
+          current = 0;
+        } else {
+          int temp = current + 1;
+          list.insertElementAt(obj, temp);
+          current += 1;
+        }
+    }
+
+    // clears collection of objects
+    public void clear(){
+        list.clear();
+      }
+
+    // prints input string
+    public static void p(String s) {
+        System.out.println(s);
+    }
+
+    // testing implementation
+    public static void main(String[] args) {
+          p("creating new circular vector");
+          Circular myList = new CircularVector();
+
+          p("size is " + myList.size());
+          p("adding 7");
+          myList.addAfterCurrent(7);
+          p("current is " + myList.getCurrent());
+          p("adding 8");
+          myList.addAfterCurrent(8);
+          p("current is " + myList.getCurrent());
+          p("adding 10");
+          myList.addAfterCurrent(10);
+          p("current is " + myList.getCurrent());
+          p("calling next");
+          myList.next();
+          p("current is " + myList.getCurrent());
+          p("calling next");
+          myList.next();
+          p("current is " + myList.getCurrent());
+          p("calling next");
+          myList.next();
+          p("current is " + myList.getCurrent());
+          p("removing current");
+          myList.removeCurrent();
+          p("current is " + myList.getCurrent());
+          p("size is " + myList.size());
+          p("clearing vector");
+          myList.clear();
+          p("size is " + myList.size());
+      }
+  }
