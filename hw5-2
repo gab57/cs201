@@ -1,0 +1,68 @@
+// HW5IntListListOps.java
+// CS 201 HW 5 Problem 2
+//
+// $ Gabrielle Beaulieu
+
+public class HW5IntListListOps extends IntListListOps {
+
+ 
+    public static IntListList filterSorted (IntListList L) 
+    //Returns a list of elts of L that are themselves sorted lists
+    {	
+        if (isEmpty(L)){
+        	return empty();
+        } else if (HW5IntListOps.isSorted(head(L))){
+        	return prepend(head(L), filterSorted(tail(L)));
+        } else {
+        	return filterSorted(tail(L));
+        }
+    }
+
+
+    public static IntListList mapPrepend (int i, IntListList L) 
+    // Returns a new list that contains list elements in which i is
+    //prepended to every corresponding element of the input list.
+    {
+    	if (isEmpty(L)){
+    		return empty();
+    	} else {
+    		return prepend(IntListOps.prepend(i, head(L)), mapPrepend(i, tail(L)));
+    	}
+    }
+
+    
+    public static IntListList subsequences (IntList L) 
+        // Given an int list L, returns list of all subsequences of L
+    {
+    	if (IntListOps.isEmpty(L)){
+    		return prepend(IntListOps.empty(), empty());
+    	} else {
+    		return append(subsequences(IntListOps.tail(L)), mapPrepend(IntListOps.head(L), 
+    				subsequences(IntListOps.tail(L))));
+    	} 
+    }
+
+    
+    // optional (extra credit):
+    // ****still in the works/ method not working yet****
+    
+    public static IntListList longest (IntListList L) 
+    // Recursively returns a list of all lists of L that have the longest length
+    {	
+    	if (isEmpty(L)){
+    		return empty();
+    	} else if (isEmpty(tail(L))){
+    		return L;
+    	} else if (IntListOps.length(head(L)) < IntListOps.length(head(tail(L)))){
+    		return longest(tail(L));
+    	} else if (IntListOps.length(head(L)) > IntListOps.length(head(tail(L)))){
+    		return longest(prepend(head(L),tail(tail(L))));
+    	} else {
+    		return longest(prepend(head(L), longest(tail(L))));
+    		
+    		//return prepend(head(L);longest(head(L), longest(tail(tail(L))));
+    	}
+    }
+  
+ }
+
