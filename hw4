@@ -1,0 +1,115 @@
+// MyVector.java
+// CS 201 HW 4, problem 2
+//
+// $ Gabrielle Beaulieu
+// Credit starter code Daniel Sharstein
+
+  import structure5.Vector;
+  import java.util.Comparator;
+
+  public class MyVector<T> extends Vector<T> {
+
+
+    // Constructs a new empty MyVector
+    public MyVector() {
+	     super(); // call constructor of super class
+    }
+
+    // Constructs a new MyVector with initial capacity n
+    public MyVector(int n) {
+	      super(n); // call constructor of super class
+    }
+
+    public void selectionSort(Comparator<T> c)
+    // sorts Vector of type T using selection sort algorithm
+    // pre: 0 <= n <= vector length
+    // post: values of indice 0 through n-1 sorted in ascending order
+    {
+    for (int numUnsorted = size(); numUnsorted > 0; numUnsorted--) {
+          int max = 0;
+          for (int i = 1; i < numUnsorted; i++) {
+              if (c.compare(get(i), get(max)) > 0){
+                max = i;
+              }
+            }
+          T temp = get(numUnsorted-1);
+          set((numUnsorted -1), get(max));
+          set(max, temp);
+        }
+      }
+
+
+    public void insertionSort(Comparator<T> c)
+    // sort Vector of type T using insertion sort algorithm
+    // pre: 0 <= n <= vector length
+    // post: values of indice 0 through n-1 sorted in ascending order
+    {
+      for (int numSorted = 1; numSorted < size(); numSorted++) {
+        int i;
+        T val = get(numSorted);
+        for (i = numSorted; i > 0; i--) {
+            if (c.compare(val, get(i-1)) < 0){
+                set(i, (get(i-1)));
+            } else {
+                break;
+            }
+        }
+        set((i), val);
+      }
+    }
+
+    public void quickSort(Comparator<T> c)
+    // sort array of integers using quick sort algorithm
+    // pre: 0 <= n <= vector length
+    // post: values indice 0 through n-1 sorted in ascending order
+    {
+    int n = size();
+        quickSortRecursive(0, n-1, c);
+    }
+
+
+    public void quickSortRecursive(int low, int high,
+        Comparator<T> c)
+    // acts as recursive step in sorting list by quicksort method
+    {
+        int pivot;
+
+        if (low < high) {
+            pivot = partition(low, high, c);
+            quickSortRecursive(low, pivot-1, c);
+            quickSortRecursive(pivot+1, high, c);
+        }
+    }
+
+
+    public int partition(int left, int right, Comparator<T> c)
+    // partition using data[left] as pivot element
+    // pre: 0 <= left <= right < Vector length
+    // post: data[left] is pivot and placed in the correct location
+    {
+    while (true) {
+      // move right "pointer" toward left
+      while ((left<right) && (c.compare(get(left),get(right)) < 1)){
+          right--;
+      if (left<right) {
+          int temp = left++;
+          set(left, (get(right)));
+          set(right, get(temp));
+      } else {
+          return left;
+      }
+      // move left "pointer" toward right
+        while ((left<right) && (c.compare(get(left), get(right)) < 1)){
+                left++;
+            if (left<right) {
+                int temp = right--;
+                set(left, get(right));
+                set(right, get(temp));
+            } else {
+                return right;
+            }
+          }
+        }
+      }
+    }
+  }
